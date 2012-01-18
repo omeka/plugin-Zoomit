@@ -3,9 +3,6 @@ class Zoomit_IndexController extends Omeka_Controller_Action
 {
     public function indexAction()
     {
-        // Don't render the view script.
-        $this->_helper->viewRenderer->setNoRender(true);
-        
         // Get the file object.
         $file = get_db()->getTable('File')->find($this->_getParam('file-id'));
         
@@ -14,6 +11,6 @@ class Zoomit_IndexController extends Omeka_Controller_Action
         $client->setParameterGet('url', $file->getWebPath('archive'));
         $response = json_decode($client->request()->getBody(), true);
         
-        echo $response['embedHtml'];
+        $this->view->assign('embedHtml', $response['embedHtml']);
     }
 }
