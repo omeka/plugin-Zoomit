@@ -1,2 +1,1 @@
-<?php
-echo $embedHtml;
+<pre><?php echo $embedHtml; ?></pre>
