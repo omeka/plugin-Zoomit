@@ -15,6 +15,8 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
 {
     const API_URL = 'http://api.zoom.it/v1/content';
     
+    const DEFAULT_VIEWER_EMBED = 1;
+    
     const DEFAULT_VIEWER_WIDTH = 500;
     
     const DEFAULT_VIEWER_HEIGHT = 600;
@@ -22,6 +24,7 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_hooks = array(
         'install', 
         'uninstall', 
+        'upgrade', 
         'initialize', 
         'config_form', 
         'config', 
@@ -30,8 +33,10 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
     );
     
     protected $_options = array(
+        'zoomit_embed_admin' => self::DEFAULT_VIEWER_EMBED, 
         'zoomit_width_admin' => self::DEFAULT_VIEWER_WIDTH, 
         'zoomit_height_admin' => self::DEFAULT_VIEWER_HEIGHT, 
+        'zoomit_embed_public' => self::DEFAULT_VIEWER_EMBED, 
         'zoomit_width_public' => self::DEFAULT_VIEWER_WIDTH, 
         'zoomit_height_public' => self::DEFAULT_VIEWER_HEIGHT, 
     );
@@ -50,6 +55,18 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookUninstall()
     {
         $this->_uninstallOptions();
+    }
+    
+    /**
+     * Upgrade the plugin.
+     */
+    public function hookUpgrade($args)
+    {
+        // Version 2.0 introduced image viewer embed flags.
+        if (version_compare($args['old_version'], '2.0', '<')) {
+            set_option('zoomit_embed_admin', self::DEFAULT_VIEWER_EMBED);
+            set_option('zoomit_embed_public', self::DEFAULT_VIEWER_EMBED);
+        }
     }
     
     /**
@@ -80,8 +97,10 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
             !is_numeric($_POST['zoomit_height_public'])) {
             throw new Omeka_Validate_Exception('The width and height must be numeric.');
         }
+        set_option('zoomit_embed_admin', (int) (boolean) $_POST['zoomit_embed_admin']);
         set_option('zoomit_width_admin', $_POST['zoomit_width_admin']);
         set_option('zoomit_height_admin', $_POST['zoomit_height_admin']);
+        set_option('zoomit_embed_public', (int) (boolean) $_POST['zoomit_embed_public']);
         set_option('zoomit_width_public', $_POST['zoomit_width_public']);
         set_option('zoomit_height_public', $_POST['zoomit_height_public']);
     }
@@ -91,6 +110,10 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookAdminItemsShow($args)
     {
+        // Embed viewer only if configured to do so.
+        if (!get_option('zoomit_embed_admin')) {
+            return;
+        }
         echo $args['view']->zoomit($args['item']->Files, 
                                    get_option('zoomit_width_admin'), 
                                    get_option('zoomit_height_admin'));
@@ -101,6 +124,10 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookPublicItemsShow($args)
     {
+        // Embed viewer only if configured to do so.
+        if (!get_option('zoomit_embed_public')) {
+            return;
+        }
         echo $args['view']->zoomit($args['item']->Files, 
                                    get_option('zoomit_width_public'), 
                                    get_option('zoomit_height_public'));
