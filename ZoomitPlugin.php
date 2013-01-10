@@ -36,27 +36,42 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
         'zoomit_height_public' => self::DEFAULT_VIEWER_HEIGHT, 
     );
     
+    /**
+     * Install the plugin.
+     */
     public function hookInstall()
     {
         $this->_installOptions();
     }
    
+    /**
+     * Unnstall the plugin.
+     */
     public function hookUninstall()
     {
         $this->_uninstallOptions();
     }
     
+    /**
+     * Initialize the plugin.
+     */
     public function hookInitialize()
     {
         // Add the view helper directory to the stack.
         get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'Zoomit_View_Helper_');
     }
     
+    /**
+     * Display the config form.
+     */
     public function hookConfigForm()
     {
         echo get_view()->partial('plugins/zoomit-config-form.php');
     }
     
+    /**
+     * Handle the config form.
+     */
     public function hookConfig()
     {
         if (!is_numeric($_POST['zoomit_width_admin']) || 
@@ -71,6 +86,9 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
         set_option('zoomit_height_public', $_POST['zoomit_height_public']);
     }
     
+    /**
+     * Display the image viewer in admin items/show.
+     */
     public function hookAdminItemsShow($args)
     {
         echo $args['view']->zoomit($args['item']->Files, 
@@ -78,6 +96,9 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
                                    get_option('zoomit_height_admin'));
     }
     
+    /**
+     * Display the image viewer in public items/show.
+     */
     public function hookPublicItemsShow($args)
     {
         echo $args['view']->zoomit($args['item']->Files, 
