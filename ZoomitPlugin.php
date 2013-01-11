@@ -25,7 +25,6 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
         'install', 
         'uninstall', 
         'upgrade', 
-        'initialize', 
         'config_form', 
         'config', 
         'admin_items_show', 
@@ -67,15 +66,6 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
             set_option('zoomit_embed_admin', self::DEFAULT_VIEWER_EMBED);
             set_option('zoomit_embed_public', self::DEFAULT_VIEWER_EMBED);
         }
-    }
-    
-    /**
-     * Initialize the plugin.
-     */
-    public function hookInitialize()
-    {
-        // Add the view helper directory to the stack.
-        get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'Zoomit_View_Helper_');
     }
     
     /**
