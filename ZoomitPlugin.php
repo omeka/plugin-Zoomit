@@ -24,6 +24,7 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_hooks = array(
         'install', 
         'uninstall', 
+        'initialize', 
         'upgrade', 
         'config_form', 
         'config', 
@@ -54,6 +55,16 @@ class ZoomitPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookUninstall()
     {
         $this->_uninstallOptions();
+    }
+    
+    
+    /**
+     * Initialize the plugin.
+     */
+    public function hookInitialize()
+    {
+        // Add translation.
+        add_translation_source(dirname(__FILE__) . '/languages');
     }
     
     /**

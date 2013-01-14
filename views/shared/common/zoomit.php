@@ -5,7 +5,7 @@ jQuery(document).ready(function () {
         event.preventDefault();
         zoomit.empty();
         zoomit.append(
-        '<h2>Viewing: ' + jQuery(this).text() + '</h2>'
+        '<h2><?php echo __('Viewing'); ?>: ' + jQuery(this).text() + '</h2>'
       + '<iframe id="zoomit_iframe" ' 
       + 'src="about:blank" ' 
       + 'style="border:none;"' 
@@ -22,8 +22,8 @@ jQuery(document).ready(function () {
 });
 </script>
 <div id="zoomit">
-    <h2>Image Viewer</h2>
-    <p>Click below to view an image using the <a href="http://zoom.it/">Zoom.it</a> viewer.</p>
+    <h2><?php echo __('Image Viewer'); ?></h2>
+    <p><?php echo __('Click below to view an image using the %sZoom.it%s viewer.', '<a href="http://zoom.it/">', '</a>'); ?></p>
     <ul>
         <?php foreach($images as $image): ?>
         <li><a href="<?php echo html_escape($image->getWebPath('original')); ?>" class="zoomit_images"><?php echo html_escape($image->original_filename); ?></a></li>
